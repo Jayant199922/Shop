@@ -1,0 +1,5 @@
+// Paste your Supabase project details here. Use the public anon key only.
+window.APP_CONFIG = {
+  SUPABASE_URL: 'PASTE_SUPABASE_PROJECT_URL_HERE',
+  SUPABASE_ANON_KEY: 'PASTE_SUPABASE_ANON_KEY_HERE'
+};

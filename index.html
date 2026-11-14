@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#172554">
+<title>Daily Shop Ledger</title>
+<style>
+:root{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#172033;background:#f4f6fb}*{box-sizing:border-box}body{margin:0}.top{background:#172554;color:#fff;padding:20px max(18px,calc((100% - 980px)/2));display:flex;align-items:center;justify-content:space-between;gap:12px}.top h1{font-size:19px;margin:0}.top small{opacity:.8}.wrap{max-width:980px;margin:22px auto;padding:0 16px}.panel{background:#fff;border:1px solid #e3e8f1;border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 3px 14px #15264a0a}.hidden{display:none!important}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field label{font-size:13px;font-weight:650;color:#46536a}.field input,.field textarea,.field select{width:100%;padding:12px;border:1px solid #ccd5e3;border-radius:10px;font:inherit;background:#fff}.field textarea{min-height:90px;resize:vertical}.wide{grid-column:1/-1}.btn{border:0;border-radius:10px;padding:12px 16px;font-weight:700;cursor:pointer;background:#1d4ed8;color:#fff}.btn.secondary{background:#e8eefb;color:#1d3b75}.btn.danger{background:#fff0f0;color:#a22}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.muted{color:#6b778c;font-size:13px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.tab{border:1px solid #d5ddeb;background:#fff;border-radius:999px;padding:8px 13px;cursor:pointer}.tab.active{background:#172554;color:#fff;border-color:#172554}.entry{border:1px solid #e3e8f1;border-radius:12px;padding:14px;margin:10px 0}.entryhead{display:flex;justify-content:space-between;gap:12px;align-items:center}.pill{font-size:11px;font-weight:750;border-radius:999px;padding:5px 9px;background:#eef2ff;color:#3730a3}.pill.approved{background:#e8f8ef;color:#17683a}.pill.correction_required{background:#fff4df;color:#8a5300}.pill.submitted{background:#e8efff;color:#234ca3}.totals{font-size:24px;font-weight:800;margin-top:5px}.notice{background:#fff8e8;border:1px solid #f4dfac;padding:12px;border-radius:10px;font-size:13px;line-height:1.5}.error{color:#b42318;font-size:13px}.success{color:#137547;font-size:13px}h2{font-size:17px;margin:0 0 14px}.section{font-size:13px;font-weight:800;color:#344665;margin:18px 0 10px}.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}table{width:100%;border-collapse:collapse;font-size:13px}td,th{text-align:left;padding:9px;border-bottom:1px solid #edf0f5}th{color:#637087}@media(max-width:600px){.grid{grid-template-columns:1fr}.wide{grid-column:auto}.wrap{margin:14px auto}.panel{padding:14px}.top{padding:16px}}
+</style>
+</head>
+<body>
+<header class="top"><div><h1>Daily Shop Ledger</h1><small>Daily balances · review · approval</small></div><button id="logout" class="btn secondary hidden">Sign out</button></header>
+<main class="wrap">
+<section id="setup" class="panel"><h2>Connect your free database</h2><p class="muted">Add your Supabase project URL and public anon key in <b>config.js</b> before deploying. Setup instructions are in README.md.</p></section>
+<section id="login" class="panel hidden"><h2>Sign in</h2><div class="grid"><div class="field wide"><label>Email</label><input id="email" type="email" autocomplete="username" placeholder="you@example.com"></div><div class="field wide"><label>Password</label><input id="password" type="password" autocomplete="current-password"></div></div><div class="actions"><button class="btn" id="signIn">Sign in</button></div><p id="loginMsg" class="muted"></p></section>
+<section id="app" class="hidden">
+<div class="toolbar"><div><h2 id="welcome">Welcome</h2><div class="muted" id="roleText"></div></div><button class="btn" id="newEntry">+ New daily entry</button></div>
+<div id="workerView" class="hidden">
+<section class="panel" id="entryPanel"><h2 id="formTitle">Daily balance entry</h2><div id="lockMsg" class="notice hidden"></div>
+<div class="section">Account balances (₹)</div><div class="grid">
+<div class="field"><label>SBI</label><input id="sbi" type="number" min="0" step="0.01"></div><div class="field"><label>MP Online</label><input id="mp_online" type="number" min="0" step="0.01"></div><div class="field"><label>Fino</label><input id="fino" type="number" min="0" step="0.01"></div><div class="field"><label>Cash</label><input id="cash" type="number" min="0" step="0.01"></div>
+<div class="field wide"><label>Total balance (calculated)</label><div class="totals" id="total">₹0.00</div></div></div>
+<div class="section">Transactions and notes</div><div class="grid"><div class="field"><label>SBI transaction details</label><textarea id="sbi_tx" placeholder="Date, amount, transaction reference..."></textarea></div><div class="field"><label>MP Online transaction details</label><textarea id="mp_tx"></textarea></div><div class="field"><label>Fino transaction details</label><textarea id="fino_tx"></textarea></div><div class="field"><label>Notes / expenses / remarks</label><textarea id="remarks"></textarea></div></div>
+<p id="correctionNote" class="notice hidden"></p><div class="actions"><button class="btn" id="submitEntry">Submit for approval</button><button class="btn secondary" id="cancelEdit">Cancel</button></div><p id="formMsg" class="muted"></p></section>
+<section class="panel"><h2>My submissions</h2><div id="myEntries"></div></section>
+</div>
+<div id="ownerView" class="hidden"><section class="panel"><div class="tabs"><button class="tab active" data-filter="all">All</button><button class="tab" data-filter="submitted">Pending review</button><button class="tab" data-filter="correction_required">Corrections</button><button class="tab" data-filter="approved">Approved</button></div><div id="ownerEntries"></div></section></div>
+</section>
+<div id="globalMsg" class="muted"></div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js"></script>
+</body></html>
